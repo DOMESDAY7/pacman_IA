@@ -307,9 +307,9 @@ def IAPacman():
    choix = random.randrange(len(L))
    PacManPos[0] += L[choix][0]
    PacManPos[1] += L[choix][1]
-   GUM[PacManPos[0]][PacManPos[1]] = 0
-   score +=100
-   print(score)
+   if GUM[PacManPos[0]][PacManPos[1]] == 1:
+      GUM[PacManPos[0]][PacManPos[1]] = 0
+      score +=100
    # juste pour montrer comment on se sert de la fonction SetInfo1
    for x in range(LARGEUR):
       for y in range(HAUTEUR):
@@ -343,7 +343,7 @@ def PlayOneTurn():
       if iteration % 2 == 0 :   IAPacman()
       else:                     IAGhosts()
    
-   Affiche(PacmanColor = "yellow", message = "message")  
+   Affiche(PacmanColor = "yellow", message = score)  
  
  
 ###########################################:
