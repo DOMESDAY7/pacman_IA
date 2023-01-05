@@ -296,15 +296,20 @@ def GhostsPossibleMove(x,y):
    if ( TBL[x+1][y  ] == 2 ): L.append(( 1,0))
    if ( TBL[x-1][y  ] == 2 ): L.append((-1,0))
    return L
-   
+
+score = 0
+
 def IAPacman():
    global PacManPos, Ghosts
+   global score
    #deplacement Pacman
    L = PacManPossibleMove()
    choix = random.randrange(len(L))
    PacManPos[0] += L[choix][0]
    PacManPos[1] += L[choix][1]
    GUM[PacManPos[0]][PacManPos[1]] = 0
+   score +=100
+   print(score)
    # juste pour montrer comment on se sert de la fonction SetInfo1
    for x in range(LARGEUR):
       for y in range(HAUTEUR):
