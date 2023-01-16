@@ -301,6 +301,29 @@ AfficherPage(0)
 #  Partie III :   Gestion de partie   -   placez votre code dans cette section
 #
 #########################################################################
+def CheckCases(x,y):
+   list = [100, 100, 100, 100]
+   if not(len(TBL[x])<y+1):
+      # HAUT
+      if TBL[x][y+1]==0: # VIDE PAS DE COULEUR
+            list[0] = int(TBL1[x][y+1])
+   if not y<0:
+      # BAS
+      if TBL[x][y-1]==0: # VIDE PAS DE COULEUR
+            list[1] = int(TBL1[x][y-1])
+   if not x<0:
+      # GAUCHE
+      if TBL[x-1][y]==0: # VIDE PAS DE COULEUR
+            list[2] = int(TBL1[x-1][y])
+   if not(len(TBL)<x+1):
+      # DROIT
+      if TBL[x+1][y]==0: # VIDE PAS DE COULEUR
+            list[3] = int(TBL1[x+1][y])
+   # prendre le min des 4 :
+   if(min(list) == 100):
+      info = 100
+   else:
+      info = str(min(list)+1)
 
 
 def CheckCases(x, y):
@@ -332,10 +355,10 @@ def CheckCases(x, y):
     # return la valeur info
 
 
-def CasesValues(x, y):
-    if TBL[x][y] == 0 and GUM[x][y] == 0:  # VIDE PAS DE COULEUR
-        info = CheckCases(x, y)
-        SetInfo2(x, y, info)
+def CasesValues(x,y):
+   if TBL[x][y]==0 and GUM[x][y]==0: # VIDE PAS DE COULEUR
+         info = CheckCases(x,y)
+         SetInfo2(x,y,info)
 
 
 def PacManPossibleMove():
