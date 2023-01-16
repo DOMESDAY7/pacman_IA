@@ -393,11 +393,16 @@ def GhostsPossibleMove(x, y):
 score = 0
 start = True
 
+nbDisplay = 0
+PacmanMode = "normal"
+
 
 def IAPacman():
     global PacManPos, Ghosts
     global score
     global start
+    global PacmanMode
+    global nbDisplay
     # deplacement Pacman
     L = PacManPossibleMove()
 
@@ -442,26 +447,32 @@ def IAPacman():
                 CasesValues(x, y)
 
     # on cherche le min des cases possible en déplacement
-    # nextCaseX = PacManPos[0] + L[0][0]
-    # nextCaseY = PacManPos[1] +L[0][1]
-    # minimum = TBL1[nextCaseX][nextCaseY]
-    # for i in range(len(L)):
-    #     if (minimum > TBL1[L[i][0]][L[i][1]]):
-    #         minimum = TBL1[L[i][0]][L[i][1]]
-    # PacManPos[0] = nextCaseX
-    # PacManPos[1] += nextCaseY
 
     minimum = TBL2[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
-    xMin = L[0][0]
-    yMin = L[0][1]
+    xAddMin = L[0][0]
+    yAddMin = L[0][1]
     for i in range(len(L)):
         if (minimum > TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]):
             minimum = TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]
-            xMin = L[i][0]
-            yMin = L[i][1]
-    print(minimum)
-    PacManPos[0] += xMin
-    PacManPos[1] += yMin
+            xAddMin = L[i][0]
+            yAddMin = L[i][1]
+    PacManPos[0] += xAddMin
+    PacManPos[1] += yAddMin
+
+    # si pacman arrive dans un des coins il passe en hunting ghost
+    tabCorner = [[1, 1], [18, 1], [18, 9], [1, 18]]
+
+    for cornerCase in tabCorner:
+        if (PacManPos[0] == cornerCase[0] and PacManPos[1] == cornerCase[1]):
+            print("pass to hunting ghost mode")
+            nbDisplay = 0
+            PacmanMode = "huntingGhost"
+    if(nbDisplay == 16):
+        PacmanMode = "normal";
+        nbDisplay = 0
+    if (PacmanMode == "huntingGhost" and nbDisplay <= 16):
+        print("hunting ghost")
+        nbDisplay += 1
 
 
 def IAGhosts():
