@@ -289,19 +289,19 @@ def CheckCases(x,y):
    if not(len(TBL[x])<y+1):
       # HAUT
       if TBL[x][y+1]==0: # VIDE PAS DE COULEUR
-            list[0] = int(TBL2[x][y+1])
+            list[0] = int(TBL1[x][y+1])
    if not y<0:
       # BAS
       if TBL[x][y-1]==0: # VIDE PAS DE COULEUR
-            list[1] = int(TBL2[x][y-1])
+            list[1] = int(TBL1[x][y-1])
    if not x<0:
       # GAUCHE
       if TBL[x-1][y]==0: # VIDE PAS DE COULEUR
-            list[2] = int(TBL2[x-1][y])
+            list[2] = int(TBL1[x-1][y])
    if not(len(TBL)<x+1):
       # DROIT
       if TBL[x+1][y]==0: # VIDE PAS DE COULEUR
-            list[3] = int(TBL2[x+1][y])
+            list[3] = int(TBL1[x+1][y])
    # prendre le min des 4 :
    if(min(list) == 100):
       info = 100
@@ -316,7 +316,7 @@ def CheckCases(x,y):
 def CasesValues(x,y):
    if TBL[x][y]==0 and GUM[x][y]==0: # VIDE PAS DE COULEUR
          info = CheckCases(x,y)
-         SetInfo2(x,y,info)
+         SetInfo1(x,y,info)
 
       
 def PacManPossibleMove():
@@ -352,25 +352,25 @@ def IAPacman():
       score +=100
    if(start == True):
       # juste pour montrer comment on se sert de la fonction SetInfo1
-      for x in range(LARGEUR):
-         for y in range(HAUTEUR):
-            if TBL[x][y]==0:
-               if GUM[x][y] == 0:
-                  info =100
-                  SetInfo1(x,y,info)
-               if GUM[x][y] == 1:
-                  info =0
-                  SetInfo1(x,y,info)
+      # for x in range(LARGEUR):
+      #    for y in range(HAUTEUR):
+      #       if TBL[x][y]==0:
+      #          if GUM[x][y] == 0:
+      #             info =100
+      #             SetInfo1(x,y,info)
+      #          if GUM[x][y] == 1:
+      #             info =0
+      #             SetInfo1(x,y,info)
       
       for x in range(LARGEUR):
          for y in range(HAUTEUR):
             if TBL[x][y]==0:
                if GUM[x][y] == 0:
                   info =100
-                  SetInfo2(x,y,info)
+                  SetInfo1(x,y,info)
                if GUM[x][y] == 1:
                   info =0
-                  SetInfo2(x,y,info)
+                  SetInfo1(x,y,info)
       start = False
    # VERIFIE HORIZANTALE
    for x in range(LARGEUR):
