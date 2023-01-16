@@ -44,10 +44,15 @@ LARGEUR = TBL.shape [0]
 def PlacementsGUM():  # placements des pacgums
    GUM = np.zeros(TBL.shape,dtype=np.int32)
    
-   for x in range(LARGEUR):
-      for y in range(HAUTEUR):
-         if ( TBL[x][y] == 0):
-            GUM[x][y] = 1
+   # for x in range(LARGEUR):
+   #    for y in range(HAUTEUR):
+   #       if ( TBL[x][y] == 0):
+   #          GUM[x][y] = 1
+   GUM[8][1] = 1
+   GUM[13][3] = 1
+   GUM[6][7] = 1
+   GUM[13][6] = 1
+   
    return GUM
             
 GUM = PlacementsGUM()   
@@ -310,15 +315,28 @@ def IAPacman():
    if GUM[PacManPos[0]][PacManPos[1]] == 1:
       GUM[PacManPos[0]][PacManPos[1]] = 0
       score +=100
+      
    # juste pour montrer comment on se sert de la fonction SetInfo1
    for x in range(LARGEUR):
-      for y in range(HAUTEUR):
-         info = x
-         if   x % 3 == 1 : info = "+∞"
-         elif x % 3 == 2 : info = ""
-         SetInfo1(x,y,info)
+     for y in range(HAUTEUR):
+      if TBL[x][y]==0:
+         if GUM[x][y] == 0:
+            info =100
+            SetInfo1(x,y,info)
+         if GUM[x][y] == 1:
+            info =0
+            SetInfo1(x,y,info)
    
- 
+   # 
+   for x in range(LARGEUR):
+     for y in range(HAUTEUR):
+      if TBL[x][y]==0:
+         if GUM[x][y] == 0:
+            info =100
+            SetInfo1(x,y,info)
+         if GUM[x][y] == 1:
+            info =0
+            SetInfo1(x,y,info)
    
 def IAGhosts():
    #deplacement Fantome
