@@ -44,14 +44,14 @@ LARGEUR = TBL.shape [0]
 def PlacementsGUM():  # placements des pacgums
    GUM = np.zeros(TBL.shape,dtype=np.int32)
    
-   # for x in range(LARGEUR):
-   #    for y in range(HAUTEUR):
-   #       if ( TBL[x][y] == 0):
-   #          GUM[x][y] = 1
-   GUM[8][1] = 1
-   GUM[13][3] = 1
-   GUM[6][7] = 1
-   GUM[13][6] = 1
+   for x in range(LARGEUR):
+      for y in range(HAUTEUR):
+         if ( TBL[x][y] == 0):
+            GUM[x][y] = 1
+   # GUM[8][1] = 1
+   # GUM[13][3] = 1
+   # GUM[6][7] = 1
+   # GUM[13][6] = 1
    
    return GUM
             
@@ -156,6 +156,7 @@ def AfficherPage(id):
 def WindowAnim():
     PlayOneTurn()
     Window.after(333,WindowAnim)
+
 
 Window.after(100,WindowAnim)
 
@@ -283,6 +284,39 @@ AfficherPage(0)
 #  Partie III :   Gestion de partie   -   placez votre code dans cette section
 #
 #########################################################################
+def CheckCases(x,y):
+   list = [100, 100, 100, 100]
+   if not(len(TBL[x])<y+1):
+      # HAUT
+      if TBL[x][y+1]==0: # VIDE PAS DE COULEUR
+            list[0] = int(TBL2[x][y+1])
+   if not y<0:
+      # BAS
+      if TBL[x][y-1]==0: # VIDE PAS DE COULEUR
+            list[1] = int(TBL2[x][y-1])
+   if not x<0:
+      # GAUCHE
+      if TBL[x-1][y]==0: # VIDE PAS DE COULEUR
+            list[2] = int(TBL2[x-1][y])
+   if not(len(TBL)<x+1):
+      # DROIT
+      if TBL[x+1][y]==0: # VIDE PAS DE COULEUR
+            list[3] = int(TBL2[x+1][y])
+   # prendre le min des 4 :
+   if(min(list) == 100):
+      info = 100
+   else:
+      info = str(min(list)+1)
+
+   # Ajouter +1
+   return info
+   # return la valeur info
+
+
+def CasesValues(x,y):
+   if TBL[x][y]==0 and GUM[x][y]==0: # VIDE PAS DE COULEUR
+         info = CheckCases(x,y)
+         SetInfo2(x,y,info)
 
       
 def PacManPossibleMove():
@@ -303,10 +337,11 @@ def GhostsPossibleMove(x,y):
    return L
 
 score = 0
-
+start = True
 def IAPacman():
    global PacManPos, Ghosts
    global score
+   global start
    #deplacement Pacman
    L = PacManPossibleMove()
    choix = random.randrange(len(L))
@@ -315,28 +350,39 @@ def IAPacman():
    if GUM[PacManPos[0]][PacManPos[1]] == 1:
       GUM[PacManPos[0]][PacManPos[1]] = 0
       score +=100
+   if(start == True):
+      # juste pour montrer comment on se sert de la fonction SetInfo1
+      for x in range(LARGEUR):
+         for y in range(HAUTEUR):
+            if TBL[x][y]==0:
+               if GUM[x][y] == 0:
+                  info =100
+                  SetInfo1(x,y,info)
+               if GUM[x][y] == 1:
+                  info =0
+                  SetInfo1(x,y,info)
       
-   # juste pour montrer comment on se sert de la fonction SetInfo1
+      for x in range(LARGEUR):
+         for y in range(HAUTEUR):
+            if TBL[x][y]==0:
+               if GUM[x][y] == 0:
+                  info =100
+                  SetInfo2(x,y,info)
+               if GUM[x][y] == 1:
+                  info =0
+                  SetInfo2(x,y,info)
+      start = False
+   # VERIFIE HORIZANTALE
    for x in range(LARGEUR):
      for y in range(HAUTEUR):
-      if TBL[x][y]==0:
-         if GUM[x][y] == 0:
-            info =100
-            SetInfo1(x,y,info)
-         if GUM[x][y] == 1:
-            info =0
-            SetInfo1(x,y,info)
-   
-   # 
-   for x in range(LARGEUR):
-     for y in range(HAUTEUR):
-      if TBL[x][y]==0:
-         if GUM[x][y] == 0:
-            info =100
-            SetInfo1(x,y,info)
-         if GUM[x][y] == 1:
-            info =0
-            SetInfo1(x,y,info)
+      if TBL2[x][y]!=0:
+         CasesValues(x,y)
+
+   # VERIFIE VERTICALEMENT
+   for y in range(HAUTEUR):
+     for x in range(LARGEUR):
+      if TBL2[x][y]!=0:
+         CasesValues(x,y)
    
 def IAGhosts():
    #deplacement Fantome
