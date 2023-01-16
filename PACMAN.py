@@ -301,29 +301,31 @@ AfficherPage(0)
 #  Partie III :   Gestion de partie   -   placez votre code dans cette section
 #
 #########################################################################
-def CheckCases(x,y):
-   list = [100, 100, 100, 100]
-   if not(len(TBL[x])<y+1):
-      # HAUT
-      if TBL[x][y+1]==0: # VIDE PAS DE COULEUR
+
+
+def CheckCases(x, y):
+    list = [100, 100, 100, 100]
+    if not (len(TBL[x]) < y+1):
+        # HAUT
+        if TBL[x][y+1] == 0:  # VIDE PAS DE COULEUR
             list[0] = int(TBL1[x][y+1])
-   if not y<0:
-      # BAS
-      if TBL[x][y-1]==0: # VIDE PAS DE COULEUR
+    if not y < 0:
+        # BAS
+        if TBL[x][y-1] == 0:  # VIDE PAS DE COULEUR
             list[1] = int(TBL1[x][y-1])
-   if not x<0:
-      # GAUCHE
-      if TBL[x-1][y]==0: # VIDE PAS DE COULEUR
+    if not x < 0:
+        # GAUCHE
+        if TBL[x-1][y] == 0:  # VIDE PAS DE COULEUR
             list[2] = int(TBL1[x-1][y])
-   if not(len(TBL)<x+1):
-      # DROIT
-      if TBL[x+1][y]==0: # VIDE PAS DE COULEUR
+    if not (len(TBL) < x+1):
+        # DROIT
+        if TBL[x+1][y] == 0:  # VIDE PAS DE COULEUR
             list[3] = int(TBL1[x+1][y])
-   # prendre le min des 4 :
-   if(min(list) == 100):
-      info = 100
-   else:
-      info = str(min(list)+1)
+    # prendre le min des 4 :
+    if (min(list) == 100):
+        info = 100
+    else:
+        info = str(min(list)+1)
 
 
 def CheckCases(x, y):
@@ -355,10 +357,10 @@ def CheckCases(x, y):
     # return la valeur info
 
 
-def CasesValues(x,y):
-   if TBL[x][y]==0 and GUM[x][y]==0: # VIDE PAS DE COULEUR
-         info = CheckCases(x,y)
-         SetInfo2(x,y,info)
+def CasesValues(x, y):
+    if TBL[x][y] == 0 and GUM[x][y] == 0:  # VIDE PAS DE COULEUR
+        info = CheckCases(x, y)
+        SetInfo2(x, y, info)
 
 
 def PacManPossibleMove():
@@ -398,6 +400,7 @@ def IAPacman():
     global start
     # deplacement Pacman
     L = PacManPossibleMove()
+
     # choix = random.randrange(len(L))
     # PacManPos[0] += L[choix][0]
     # PacManPos[1] += L[choix][1]
@@ -405,7 +408,6 @@ def IAPacman():
         GUM[PacManPos[0]][PacManPos[1]] = 0
         score += 100
     if (start == True):
-        # juste pour montrer comment on se sert de la fonction SetInfo1
         for x in range(LARGEUR):
             for y in range(HAUTEUR):
                 if TBL[x][y] == 0:
@@ -426,18 +428,6 @@ def IAPacman():
                         info = 0
                         SetInfo2(x, y, info)
         start = False
-    # on cherche le min des cases possible en déplacement
-    minimum = TBL1[L[0][0]][L[0][1]]
-    xNextPos = L[0][0]
-    yNextPos = L[0][1]
-    for i in range(len(L)):
-        print(TBL1[L[i][0]][L[i][1]])
-        if (minimum > TBL1[L[i][0]][L[i][1]]):
-            minimum = TBL1[L[i][0]][L[i][1]]
-            xNextPos = L[0][0]
-            yNextPos = L[0][1]
-    PacManPos[0] += xNextPos
-    PacManPos[1] += yNextPos
 
     # VERIFIE HORIZANTALE
     for x in range(LARGEUR):
@@ -450,6 +440,28 @@ def IAPacman():
         for x in range(LARGEUR):
             if TBL2[x][y] != 0:
                 CasesValues(x, y)
+
+    # on cherche le min des cases possible en déplacement
+    # nextCaseX = PacManPos[0] + L[0][0]
+    # nextCaseY = PacManPos[1] +L[0][1]
+    # minimum = TBL1[nextCaseX][nextCaseY]
+    # for i in range(len(L)):
+    #     if (minimum > TBL1[L[i][0]][L[i][1]]):
+    #         minimum = TBL1[L[i][0]][L[i][1]]
+    # PacManPos[0] = nextCaseX
+    # PacManPos[1] += nextCaseY
+
+    minimum = TBL2[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
+    xMin = L[0][0]
+    yMin = L[0][1]
+    for i in range(len(L)):
+        if (minimum > TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]):
+            minimum = TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]
+            xMin = L[i][0]
+            yMin = L[i][1]
+    print(minimum)
+    PacManPos[0] += xMin
+    PacManPos[1] += yMin
 
 
 def IAGhosts():
