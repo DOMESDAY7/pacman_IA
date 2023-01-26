@@ -510,9 +510,6 @@ def IAPacman():
         if (nbDisplay == 16):
             isPacmanSuper = False
             nbDisplay = 0
-        if (isPacmanSuper == True and nbDisplay <= 16):
-            print("hunting ghost")
-            print(nbDisplay)
     nbDisplay += 1
 
 
