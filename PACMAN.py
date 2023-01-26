@@ -169,7 +169,24 @@ def WindowAnim():
     PlayOneTurn()
     Window.after(333, WindowAnim)
 
+# set le tab1 et tab2
+def SetTabs():
+   for x in range(LARGEUR):
+      for y in range(HAUTEUR):
+         if TBL[x][y] == 0:
+               info = 100
+               SetInfo1(x, y, info)
 
+   for x in range(LARGEUR):
+      for y in range(HAUTEUR):
+         if TBL[x][y] == 0:
+            if GUM[x][y] == 0:
+               info = 100
+               SetInfo2(x, y, info)
+            if GUM[x][y] == 1:
+               info = 0
+               SetInfo2(x, y, info)
+SetTabs()
 Window.after(100, WindowAnim)
 
 # Ressources
@@ -302,33 +319,7 @@ AfficherPage(0)
 #
 #########################################################################
 
-
-def CheckCases(x, y):
-    list = [100, 100, 100, 100]
-    if not (len(TBL[x]) < y+1):
-        # HAUT
-        if TBL[x][y+1] == 0:  # VIDE PAS DE COULEUR
-            list[0] = int(TBL1[x][y+1])
-    if not y < 0:
-        # BAS
-        if TBL[x][y-1] == 0:  # VIDE PAS DE COULEUR
-            list[1] = int(TBL1[x][y-1])
-    if not x < 0:
-        # GAUCHE
-        if TBL[x-1][y] == 0:  # VIDE PAS DE COULEUR
-            list[2] = int(TBL1[x-1][y])
-    if not (len(TBL) < x+1):
-        # DROIT
-        if TBL[x+1][y] == 0:  # VIDE PAS DE COULEUR
-            list[3] = int(TBL1[x+1][y])
-    # prendre le min des 4 :
-    if (min(list) == 100):
-        info = 100
-    else:
-        info = str(min(list)+1)
-
-
-def CheckCases(x, y):
+def CheckCasesPacMan(x, y):
     list = [100, 100, 100, 100]
     if not (len(TBL[x]) < y+1):
         # HAUT
@@ -356,12 +347,80 @@ def CheckCases(x, y):
     return info
     # return la valeur info
 
+def CheckCasesGhost(x, y):
+    list = [100, 100, 100, 100]
+    if not (len(TBL[x]) < y+1):
+        # HAUT
+        if TBL[x][y+1] == 0:  # VIDE PAS DE COULEUR
+            list[0] = int(TBL1[x][y+1])
+    if not y < 0:
+        # BAS
+        if TBL[x][y-1] == 0:  # VIDE PAS DE COULEUR
+            list[1] = int(TBL1[x][y-1])
+    if not x < 0:
+        # GAUCHE
+        if TBL[x-1][y] == 0:  # VIDE PAS DE COULEUR
+            list[2] = int(TBL1[x-1][y])
+    if not (len(TBL) < x+1):
+        # DROIT
+        if TBL[x+1][y] == 0:  # VIDE PAS DE COULEUR
+            list[3] = int(TBL1[x+1][y])
+    # prendre le min des 4 :
+    if (min(list) == 100):
+        info = 100
+    else:
+        info = str(min(list)+1)
 
-def CasesValues(x, y):
+    # Ajouter +1
+    return info
+    # return la valeur info
+
+def CasesValuesPacMan(x, y):
     if TBL[x][y] == 0 and GUM[x][y] == 0:  # VIDE PAS DE COULEUR
-        info = CheckCases(x, y)
+        info = CheckCasesPacMan(x, y)
         SetInfo2(x, y, info)
 
+def CasesValuesGhost(x, y):
+    if TBL[x][y] == 0:  # VIDE PAS DE COULEUR
+        info = CheckCasesGhost(x, y)
+        SetInfo1(x, y, info)
+
+def PacMap():
+   # VERIFIE HORIZANTALE
+    for x in range(LARGEUR):
+        for y in range(HAUTEUR):
+            if TBL2[x][y] != 0:
+                CasesValuesPacMan(x, y)
+
+    # VERIFIE VERTICALEMENT
+    for y in range(HAUTEUR):
+        for x in range(LARGEUR):
+            if TBL2[x][y] != 0:
+                CasesValuesPacMan(x, y)
+
+def GhostMap():
+   # VERIFIE HORIZANTALE
+    for x in range(LARGEUR):
+        for y in range(HAUTEUR):
+            if PacManPos != [x,y]:
+                CasesValuesGhost(x, y)
+
+    # VERIFIE VERTICALEMENT
+    for y in range(HAUTEUR):
+        for x in range(LARGEUR):
+            if PacManPos != [x,y]:
+                CasesValuesGhost(x, y)
+
+    for x in range(LARGEUR):
+        for y in range(HAUTEUR):
+            if PacManPos != [x,y]:
+                CasesValuesGhost(x, y)
+
+    # VERIFIE VERTICALEMENT
+    for y in range(HAUTEUR):
+        for x in range(LARGEUR):
+            if PacManPos != [x,y]:
+                CasesValuesGhost(x, y)
 
 def PacManPossibleMove():
     L = []
@@ -413,38 +472,12 @@ def IAPacman():
         GUM[PacManPos[0]][PacManPos[1]] = 0
         score += 100
     if (start == True):
-        for x in range(LARGEUR):
-            for y in range(HAUTEUR):
-                if TBL[x][y] == 0:
-                    if GUM[x][y] == 0:
-                        info = 100
-                        SetInfo1(x, y, info)
-                    if GUM[x][y] == 1:
-                        info = 0
-                        SetInfo1(x, y, info)
-
-        for x in range(LARGEUR):
-            for y in range(HAUTEUR):
-                if TBL[x][y] == 0:
-                    if GUM[x][y] == 0:
-                        info = 100
-                        SetInfo2(x, y, info)
-                    if GUM[x][y] == 1:
-                        info = 0
-                        SetInfo2(x, y, info)
+        
+        # booleen pour que ça s'effectue qu'une seul fois
         start = False
 
-    # VERIFIE HORIZANTALE
-    for x in range(LARGEUR):
-        for y in range(HAUTEUR):
-            if TBL2[x][y] != 0:
-                CasesValues(x, y)
-
-    # VERIFIE VERTICALEMENT
-    for y in range(HAUTEUR):
-        for x in range(LARGEUR):
-            if TBL2[x][y] != 0:
-                CasesValues(x, y)
+    # definie map pour pacman
+    PacMap()
 
     # on cherche le min des cases possible en déplacement
 
@@ -476,6 +509,10 @@ def IAPacman():
 
 
 def IAGhosts():
+
+    # map fontome
+    TBL1[PacManPos[0]][PacManPos[1]] = 0
+    GhostMap()
     # deplacement Fantome
     for F in Ghosts:
         L = GhostsPossibleMove(F[0], F[1])
