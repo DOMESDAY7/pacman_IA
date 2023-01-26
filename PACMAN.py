@@ -64,11 +64,10 @@ GUM = PlacementsGUM()
 PacManPos = [5, 5]
 
 Ghosts = []
-Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "pink"])
+Ghosts.append([LARGEUR // 2, HAUTEUR // 2,  "pink"])
 Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "orange"])
 Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "cyan"])
-Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "red"])
-
+Ghosts.append([(LARGEUR//2)+1, HAUTEUR // 2,  "red"])
 
 ##############################################################################
 #
@@ -170,22 +169,26 @@ def WindowAnim():
     Window.after(333, WindowAnim)
 
 # set le tab1 et tab2
-def SetTabs():
-   for x in range(LARGEUR):
-      for y in range(HAUTEUR):
-         if TBL[x][y] == 0:
-               info = 100
-               SetInfo1(x, y, info)
 
-   for x in range(LARGEUR):
-      for y in range(HAUTEUR):
-         if TBL[x][y] == 0:
-            if GUM[x][y] == 0:
-               info = 100
-               SetInfo2(x, y, info)
-            if GUM[x][y] == 1:
-               info = 0
-               SetInfo2(x, y, info)
+
+def SetTabs():
+    for x in range(LARGEUR):
+        for y in range(HAUTEUR):
+            if TBL[x][y] == 0:
+                info = 100
+                SetInfo1(x, y, info)
+
+    for x in range(LARGEUR):
+        for y in range(HAUTEUR):
+            if TBL[x][y] == 0:
+                if GUM[x][y] == 0:
+                    info = 100
+                    SetInfo2(x, y, info)
+                if GUM[x][y] == 1:
+                    info = 0
+                    SetInfo2(x, y, info)
+
+
 SetTabs()
 Window.after(100, WindowAnim)
 
@@ -287,6 +290,7 @@ def Affiche(PacmanColor, message):
     # dessine les fantomes
     dec = -3
     for P in Ghosts:
+        print(P[0], P[1])
         xx = To(P[0])
         yy = To(P[1])
         e = 16
@@ -323,6 +327,7 @@ AfficherPage(0)
 #
 #########################################################################
 
+
 def CheckCasesPacMan(x, y):
     list = [100, 100, 100, 100]
     if not (len(TBL[x]) < y+1):
@@ -350,6 +355,7 @@ def CheckCasesPacMan(x, y):
     # Ajouter +1
     return info
     # return la valeur info
+
 
 def CheckCasesGhost(x, y):
     list = [100, 100, 100, 100]
@@ -379,18 +385,21 @@ def CheckCasesGhost(x, y):
     return info
     # return la valeur info
 
+
 def CasesValuesPacMan(x, y):
     if TBL[x][y] == 0 and GUM[x][y] == 0:  # VIDE PAS DE COULEUR
         info = CheckCasesPacMan(x, y)
         SetInfo2(x, y, info)
+
 
 def CasesValuesGhost(x, y):
     if TBL[x][y] == 0:  # VIDE PAS DE COULEUR
         info = CheckCasesGhost(x, y)
         SetInfo1(x, y, info)
 
+
 def PacMap():
-   # VERIFIE HORIZANTALE
+    # VERIFIE HORIZANTALE
     for x in range(LARGEUR):
         for y in range(HAUTEUR):
             if TBL2[x][y] != 0:
@@ -401,30 +410,32 @@ def PacMap():
         for x in range(LARGEUR):
             if TBL2[x][y] != 0:
                 CasesValuesPacMan(x, y)
+
 
 def GhostMap():
-   # VERIFIE HORIZANTALE
+    # VERIFIE HORIZANTALE
     for x in range(LARGEUR):
         for y in range(HAUTEUR):
-            if PacManPos != [x,y]:
+            if PacManPos != [x, y]:
                 CasesValuesGhost(x, y)
 
     # VERIFIE VERTICALEMENT
     for y in range(HAUTEUR):
         for x in range(LARGEUR):
-            if PacManPos != [x,y]:
+            if PacManPos != [x, y]:
                 CasesValuesGhost(x, y)
 
     for x in range(LARGEUR):
         for y in range(HAUTEUR):
-            if PacManPos != [x,y]:
+            if PacManPos != [x, y]:
                 CasesValuesGhost(x, y)
 
     # VERIFIE VERTICALEMENT
     for y in range(HAUTEUR):
         for x in range(LARGEUR):
-            if PacManPos != [x,y]:
+            if PacManPos != [x, y]:
                 CasesValuesGhost(x, y)
+
 
 def PacManPossibleMove():
     L = []
@@ -478,7 +489,7 @@ def IAPacman():
         GUM[PacManPos[0]][PacManPos[1]] = 0
         score += 100
     if (start == True):
-        
+
         # booleen pour que ça s'effectue qu'une seul fois
         start = False
 
@@ -498,12 +509,12 @@ def IAPacman():
     PacManPos[0] += xAddMin
     PacManPos[1] += yAddMin
 
-    # pour chaque coins on regarde si Pacman s'y trouve
+    # pour chaque coins on regarde si Pacman s'y trouve et qu'il y a une pacgum
     # si tel est le cas on passe en "hunting mode"
     # pendant le "hunting mode" on compte le nombre d'affichage
     # si le nombre d'affichage est à 16 Pacman repasse dans le mode "normal"
     for cornerCase in arrCorner:
-        if (PacManPos[0] == cornerCase[0] and PacManPos[1] == cornerCase[1]):
+        if (PacManPos[0] == cornerCase[0] and PacManPos[1] == cornerCase[1] and GUM[PacManPos[0]][PacManPos[1]] == 1):
             print("pass to hunting ghost mode")
             nbDisplay = 0
             isPacmanSuper = True
@@ -539,6 +550,9 @@ def PlayOneTurn():
             IAPacman()
         else:
             IAGhosts()
+
+    # si la position de pacman est égal à la position d'un ghost
+
     if (isPacmanSuper):
         Affiche(PacmanColor="red", message=score)
         return
