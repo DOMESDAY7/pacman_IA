@@ -249,6 +249,10 @@ def Affiche(PacmanColor, message):
                 xx = To(x)
                 yy = To(y)
                 e = 5
+                # placement des super pacgum
+                if ([x, y] in arrCorner):
+                    canvas.create_oval(xx-e, yy-e, xx+e, yy+e, fill="white")
+                    continue
                 canvas.create_oval(xx-e, yy-e, xx+e, yy+e, fill="orange")
 
     # extra info
@@ -451,16 +455,18 @@ def GhostsPossibleMove(x, y):
 
 score = 0
 start = True
-
 nbDisplay = 0
-PacmanMode = "normal"
+isPacmanSuper = False
+
+#  tableau des coins
+arrCorner = [[1, 1], [18, 1], [18, 9], [1, 9]]
 
 
 def IAPacman():
     global PacManPos, Ghosts
     global score
     global start
-    global PacmanMode
+    global isPacmanSuper
     global nbDisplay
     # deplacement Pacman
     L = PacManPossibleMove()
@@ -492,20 +498,22 @@ def IAPacman():
     PacManPos[0] += xAddMin
     PacManPos[1] += yAddMin
 
-    # si pacman arrive dans un des coins il passe en hunting ghost
-    tabCorner = [[1, 1], [18, 1], [18, 9], [1, 18]]
-
-    for cornerCase in tabCorner:
+    # pour chaque coins on regarde si Pacman s'y trouve
+    # si tel est le cas on passe en "hunting mode"
+    # pendant le "hunting mode" on compte le nombre d'affichage
+    # si le nombre d'affichage est à 16 Pacman repasse dans le mode "normal"
+    for cornerCase in arrCorner:
         if (PacManPos[0] == cornerCase[0] and PacManPos[1] == cornerCase[1]):
             print("pass to hunting ghost mode")
             nbDisplay = 0
-            PacmanMode = "huntingGhost"
-    if(nbDisplay == 16):
-        PacmanMode = "normal";
-        nbDisplay = 0
-    if (PacmanMode == "huntingGhost" and nbDisplay <= 16):
-        print("hunting ghost")
-        nbDisplay += 1
+            isPacmanSuper = True
+        if (nbDisplay == 16):
+            isPacmanSuper = False
+            nbDisplay = 0
+        if (isPacmanSuper == True and nbDisplay <= 16):
+            print("hunting ghost")
+            print(nbDisplay)
+    nbDisplay += 1
 
 
 def IAGhosts():
@@ -534,11 +542,12 @@ def PlayOneTurn():
             IAPacman()
         else:
             IAGhosts()
-
+    if (isPacmanSuper):
+        Affiche(PacmanColor="red", message=score)
+        return
     Affiche(PacmanColor="yellow", message=score)
 
-
-# :
 #  demarrage de la fenetre - ne pas toucher
+
 
 Window.mainloop()
