@@ -50,10 +50,6 @@ def PlacementsGUM():  # placements des pacgums
         for y in range(HAUTEUR):
             if (TBL[x][y] == 0):
                 GUM[x][y] = 1
-    # GUM[8][1] = 1
-    # GUM[13][3] = 1
-    # GUM[6][7] = 1
-    # GUM[13][6] = 1
 
     return GUM
 
@@ -440,17 +436,28 @@ def PacManPossibleMove():
     return L
 
 
-def GhostsPossibleMove(x, y):
-    L = []
+def GhostsPossibleMove0(x, y):
+    L0 = []
+    if (TBL[x][y-1] == 0):
+        L0.append((0, -1))
+    if (TBL[x][y+1] == 0):
+        L0.append((0, 1))
+    if (TBL[x+1][y] == 0):
+        L0.append((1, 0))
+    if (TBL[x-1][y] == 0):
+        L0.append((-1, 0))
+    return L0
+def GhostsPossibleMove2(x, y):
+    L2 = []
     if (TBL[x][y-1] == 2):
-        L.append((0, -1))
+        L2.append((0, -1))
     if (TBL[x][y+1] == 2):
-        L.append((0, 1))
+        L2.append((0, 1))
     if (TBL[x+1][y] == 2):
-        L.append((1, 0))
+        L2.append((1, 0))
     if (TBL[x-1][y] == 2):
-        L.append((-1, 0))
-    return L
+        L2.append((-1, 0))
+    return L2
 
 
 score = 0
@@ -477,10 +484,6 @@ def IAPacman():
     if GUM[PacManPos[0]][PacManPos[1]] == 1:
         GUM[PacManPos[0]][PacManPos[1]] = 0
         score += 100
-    if (start == True):
-        
-        # booleen pour que ça s'effectue qu'une seul fois
-        start = False
 
     # definie map pour pacman
     PacMap()
@@ -515,6 +518,51 @@ def IAPacman():
             print(nbDisplay)
     nbDisplay += 1
 
+def GhostsHunt():
+   for F in Ghosts: 
+         # Boite ghost 
+         L0 = GhostsPossibleMove0(F[0], F[1]) 
+         L2 = GhostsPossibleMove2(F[0], F[1]) 
+         if(L0!=[]):
+               print("rentré")
+               min = 100
+               choix = (0,0)
+               for l in L0:
+                  if(TBL1[l[0]][l[1]]!= None):
+                     res = int(TBL1[F[0] + l[0]][F[1] + l[1]])
+                     if min > res:
+                        min = res
+                        choix = l
+               F[0] += choix[0]
+               F[1] += choix[1]
+         else:
+            #  il reste dans la cage
+               choix2 = random.randrange(len(L2))
+               F[0] += L2[choix2][0]
+               F[1] += L2[choix2][1]
+
+def GhostsHunted():
+   for F in Ghosts: 
+         # Boite ghost 
+         L0 = GhostsPossibleMove0(F[0], F[1]) 
+         L2 = GhostsPossibleMove2(F[0], F[1]) 
+         if(L0!=[]):
+               print("rentré")
+               max = 0
+               choix = (0,0)
+               for l in L0:
+                  if(TBL1[l[0]][l[1]]!= None):
+                     res = int(TBL1[F[0] + l[0]][F[1] + l[1]])
+                     if max <= res:
+                        max = res
+                        choix = l
+               F[0] += choix[0]
+               F[1] += choix[1]
+         else:
+            #  il reste dans la cage
+               choix2 = random.randrange(len(L2))
+               F[0] += L2[choix2][0]
+               F[1] += L2[choix2][1]
 
 def IAGhosts():
 
@@ -522,11 +570,11 @@ def IAGhosts():
     TBL1[PacManPos[0]][PacManPos[1]] = 0
     GhostMap()
     # deplacement Fantome
-    for F in Ghosts:
-        L = GhostsPossibleMove(F[0], F[1])
-        choix = random.randrange(len(L))
-        F[0] += L[choix][0]
-        F[1] += L[choix][1]
+    if(isPacmanSuper):
+      GhostsHunted()
+    else:
+      GhostsHunt()
+   
 
 
 #  Boucle principale de votre jeu appelée toutes les 500ms
