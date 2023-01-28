@@ -75,6 +75,8 @@ TBL2 = [["" for i in range(LTBL)] for j in range(LTBL)]
 TBL3 = [["" for i in range(LTBL)] for j in range(LTBL)]
 
 # info peut etre une valeur / un string vide / un string...
+
+
 def SetInfo1(x, y, info):
     info = str(info)
     if x < 0:
@@ -99,6 +101,7 @@ def SetInfo2(x, y, info):
     if y >= LTBL:
         return
     TBL2[x][y] = info
+
 
 def SetInfo3(x, y, info):
     info = str(info)
@@ -202,6 +205,7 @@ def SetTabs():
                 info = 100
                 SetInfo3(x, y, info)
 
+
 SetTabs()
 Window.after(100, WindowAnim)
 
@@ -288,12 +292,12 @@ def Affiche(PacmanColor, message):
             txt = TBL2[x][y]
             canvas.create_text(xx, yy, text=txt, fill="yellow",
                                font=("Purisa", 8))
-    
+
     # extra info 3
     for x in range(LARGEUR):
         for y in range(HAUTEUR):
             xx = To(x)
-            yy = To(y) +11
+            yy = To(y) + 11
             txt = TBL3[x][y]
             canvas.create_text(xx, yy, text=txt, fill="green",
                                font=("Purisa", 8))
@@ -407,6 +411,7 @@ def CheckCasesPacman(x, y):
     return info
     # return la valeur info
 
+
 def CheckCasesGhost(x, y):
     list = [100, 100, 100, 100]
     if not (len(TBL[x]) < y+1):
@@ -441,15 +446,18 @@ def CasesValuesGum(x, y):
         info = CheckCasesGum(x, y)
         SetInfo2(x, y, info)
 
+
 def CasesValuesGhost(x, y):
-      if TBL[x][y] == 0 and TBL1[x][y]:  # VIDE PAS DE COULEUR
-         info = CheckCasesGhost(x, y)
-         SetInfo1(x, y, info)
+    if TBL[x][y] == 0 and TBL1[x][y]:  # VIDE PAS DE COULEUR
+        info = CheckCasesGhost(x, y)
+        SetInfo1(x, y, info)
+
 
 def CasesValuesPacMan(x, y):
     if TBL[x][y] == 0 and GUM[x][y] == 0:  # VIDE PAS DE COULEUR
         info = CheckCasesPacman(x, y)
         SetInfo3(x, y, info)
+
 
 def PacMap():
     # VERIFIE HORIZANTALE
@@ -463,6 +471,7 @@ def PacMap():
         for x in range(LARGEUR):
             if TBL2[x][y] != 0:
                 CasesValuesPacMan(x, y)
+
 
 def GumMap():
     # VERIFIE HORIZANTALE
@@ -479,18 +488,18 @@ def GumMap():
 
 
 def GhostMap():
-   for ghost in Ghosts:  
-         # VERIFIE HORIZANTALE
-         for x in range(LARGEUR):
+    for ghost in Ghosts:
+        # VERIFIE HORIZANTALE
+        for x in range(LARGEUR):
             for y in range(HAUTEUR):
-                  if ghost != [x, y]:
-                     CasesValuesGhost(x, y)
+                if ghost != [x, y]:
+                    CasesValuesGhost(x, y)
 
-         # VERIFIE VERTICALEMENT
-         for y in range(HAUTEUR):
+        # VERIFIE VERTICALEMENT
+        for y in range(HAUTEUR):
             for x in range(LARGEUR):
-                  if ghost != [x, y]:
-                     CasesValuesGhost(x, y)
+                if ghost != [x, y]:
+                    CasesValuesGhost(x, y)
 
 
 def PacManPossibleMove():
@@ -518,6 +527,8 @@ def GhostsPossibleMove0(x, y):
     if (TBL[x-1][y] == 0):
         L0.append((-1, 0))
     return L0
+
+
 def GhostsPossibleMove2(x, y):
     L2 = []
     if (TBL[x][y-1] == 2):
@@ -556,7 +567,7 @@ def IAPacman():
         GUM[PacManPos[0]][PacManPos[1]] = 0
         score += 100
     if (start == True):
-        
+
         # booleen pour que ça s'effectue qu'une seul fois
         start = False
 
@@ -582,7 +593,6 @@ def IAPacman():
     # si le nombre d'affichage est à 16 Pacman repasse dans le mode "normal"
     for cornerCase in arrCorner:
         if (PacManPos[0] == cornerCase[0] and PacManPos[1] == cornerCase[1] and GUM[PacManPos[0]][PacManPos[1]] == 1):
-            print("pass to hunting ghost mode")
             nbDisplay = 0
             isPacmanSuper = True
         if (nbDisplay == 16):
@@ -590,81 +600,98 @@ def IAPacman():
             nbDisplay = 0
     nbDisplay += 1
 
+
 def GhostsHunted():
-   for F in Ghosts: 
-         # Boite ghost 
-         L0 = GhostsPossibleMove0(F[0], F[1]) 
-         L2 = GhostsPossibleMove2(F[0], F[1]) 
-         if(L0!=[]):
-               print("rentré")
-               min = 100
-               choix = (0,0)
-               for l in L0:
-                  if(TBL1[l[0]][l[1]]!= None):
-                     res = int(TBL1[F[0] + l[0]][F[1] + l[1]])
-                     if min >= res:
+    for F in Ghosts:
+        # Boite ghost
+        L0 = GhostsPossibleMove0(F[0], F[1])
+        L2 = GhostsPossibleMove2(F[0], F[1])
+        if (L0 != []):
+            print("rentré")
+            min = 100
+            choix = (0, 0)
+            for l in L0:
+                if (TBL1[l[0]][l[1]] != None):
+                    res = int(TBL1[F[0] + l[0]][F[1] + l[1]])
+                    if min >= res:
                         min = res
                         choix = l
-               F[0] += choix[0]
-               F[1] += choix[1]
-         else:
+            F[0] += choix[0]
+            F[1] += choix[1]
+        else:
             #  il reste dans la cage
-               choix2 = random.randrange(len(L2))
-               F[0] += L2[choix2][0]
-               F[1] += L2[choix2][1]
+            choix2 = random.randrange(len(L2))
+            F[0] += L2[choix2][0]
+            F[1] += L2[choix2][1]
+
 
 def GhostsHunt():
-   for F in Ghosts: 
-         # Boite ghost 
-         L0 = GhostsPossibleMove0(F[0], F[1]) 
-         L2 = GhostsPossibleMove2(F[0], F[1]) 
-         if(L0!=[]):
-               print("rentré")
-               max = 0
-               choix = (0,0)
-               for l in L0:
-                  if(TBL1[l[0]][l[1]]!= None):
-                     res = int(TBL1[F[0] + l[0]][F[1] + l[1]])
-                     if max <= res:
+    for F in Ghosts:
+        # Boite ghost
+        L0 = GhostsPossibleMove0(F[0], F[1])
+        L2 = GhostsPossibleMove2(F[0], F[1])
+        if (L0 != []):
+            print("rentré")
+            max = 0
+            choix = (0, 0)
+            for l in L0:
+                if (TBL1[l[0]][l[1]] != None):
+                    res = int(TBL1[F[0] + l[0]][F[1] + l[1]])
+                    if max <= res:
                         max = res
                         choix = l
-               F[0] += choix[0]
-               F[1] += choix[1]
-         else:
+            F[0] += choix[0]
+            F[1] += choix[1]
+        else:
             #  il reste dans la cage
-               choix2 = random.randrange(len(L2))
-               F[0] += L2[choix2][0]
-               F[1] += L2[choix2][1]
+            choix2 = random.randrange(len(L2))
+            F[0] += L2[choix2][0]
+            F[1] += L2[choix2][1]
+
 
 def IAGhosts():
 
     # map fontome
     for ghost in Ghosts:
-      TBL1[ghost[0]][ghost[1]] = 0
+        TBL1[ghost[0]][ghost[1]] = 0
     GhostMap()
     # deplacement Fantome
-    if(isPacmanSuper):
-      GhostsHunted()
+    if (isPacmanSuper):
+        GhostsHunted()
     else:
-      GhostsHunt()
-   
+        GhostsHunt()
 
 
 #  Boucle principale de votre jeu appelée toutes les 500ms
 iteration = 0
 
-
+GAME_OVER_FLAG = False
 def PlayOneTurn():
     global iteration
 
-    if not PAUSE_FLAG:
+    
+
+     # si la position de pacman est égal à la position d'un ghost
+    for ghost in Ghosts:
+        if (PacManPos[0] == ghost[0] and PacManPos[1] == ghost[1]):
+            if (isPacmanSuper):
+                # on met le ghost en cage
+                ghost[0] = LARGEUR//2
+                ghost[1] = HAUTEUR//2
+                # on augmente le score
+                # score += 1000
+            else:
+                # on affiche game over
+                Affiche(PacmanColor="red", message="GAME OVER")
+                GAME_OVER_FLAG = True
+                return
+    
+    if not PAUSE_FLAG or GAME_OVER_FLAG:
         iteration += 1
         if iteration % 2 == 0:
             IAPacman()
         else:
             IAGhosts()
-
-    # si la position de pacman est égal à la position d'un ghost
 
     if (isPacmanSuper):
         Affiche(PacmanColor="red", message=score)
