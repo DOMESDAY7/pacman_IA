@@ -560,15 +560,29 @@ def IAPacman():
     nbDisplay += 1
 
     # on calcul une map des distances pour les fantomes
-    # pour chaque chaque case du jeu on regarde la distance d'un ghost et de pacman
-    # si la distance est inférieur à 3 on met la valeur de la distance dans la case
-    # sinon on met 0
-    for x in range(LARGEUR):
-        for y in range(HAUTEUR):
+    # pour chaque fantome on regarde la distance entre lui et Pacman
+    # si la distance est inférieur à la distance à 3 on écrit la distance dans le tableau arrDistancePacmanGhost
+    # on met ensuite à jour la map des distances
+    for i in range(LTBL):
+        for j in range(LTBL):
             for ghost in Ghosts:
-                arrDistancePacmanGhost[x][y] = abs(
-                    x - ghost[0]) + abs(y - ghost[1])
-                SetInfo3(x, y, arrDistancePacmanGhost[x][y])
+                if (GetDistance(ghost[0], ghost[1], i, j) < 3 and GetDistance(ghost[0], ghost[1], i, j) != 0):
+                    UpdateMap3(i, j, GetDistance(ghost[0], ghost[1], i, j))
+
+
+def UpdateMap3(x, y, info):
+    global arrDistancePacmanGhost
+    
+    # on met à jour la map
+    arrDistancePacmanGhost[x][y] = info
+    
+    # on met à jour l'affichage
+    SetInfo3(x, y, info)
+
+
+def GetDistance(x1, y1, x2, y2):
+    return abs(x1 - x2) + abs(y1 - y2)
+
 
 def GhostsHunted():
     for ghost in Ghosts:
