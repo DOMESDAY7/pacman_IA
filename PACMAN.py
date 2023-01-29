@@ -121,8 +121,6 @@ def SetInfo3(x, y, info):
 #   Partie II :  AFFICHAGE -- NE PAS MODIFIER  jusqu'à la prochaine section
 #
 ##############################################################################
-
-
 ZOOM = 40   # taille d'une case en pixels
 EPAISS = 8  # epaisseur des murs bleus en pixels
 
@@ -198,12 +196,6 @@ def SetTabs():
                 if GUM[x][y] == 1:
                     info = 0
                     SetInfo2(x, y, info)
-
-    for x in range(LARGEUR):
-        for y in range(HAUTEUR):
-            if TBL[x][y] == 0:
-                info = 100
-                SetInfo3(x, y, info)
 
 
 SetTabs()
@@ -316,7 +308,7 @@ def Affiche(PacmanColor, message):
     # dessine les fantomes
     dec = -3
     for P in Ghosts:
-        print(P[0], P[1])
+        # print(P[0], P[1])
         xx = To(P[0])
         yy = To(P[1])
         e = 16
@@ -453,26 +445,6 @@ def CasesValuesGhost(x, y):
         SetInfo1(x, y, info)
 
 
-def CasesValuesPacMan(x, y):
-    if TBL[x][y] == 0 and GUM[x][y] == 0:  # VIDE PAS DE COULEUR
-        info = CheckCasesPacman(x, y)
-        SetInfo3(x, y, info)
-
-
-def PacMap():
-    # VERIFIE HORIZANTALE
-    for x in range(LARGEUR):
-        for y in range(HAUTEUR):
-            if TBL2[x][y] != 0:
-                CasesValuesPacMan(x, y)
-
-    # VERIFIE VERTICALEMENT
-    for y in range(HAUTEUR):
-        for x in range(LARGEUR):
-            if TBL2[x][y] != 0:
-                CasesValuesPacMan(x, y)
-
-
 def GumMap():
     # VERIFIE HORIZANTALE
     for x in range(LARGEUR):
@@ -485,21 +457,6 @@ def GumMap():
         for x in range(LARGEUR):
             if TBL3[x][y] != 0:
                 CasesValuesGum(x, y)
-
-
-def GhostMap():
-    for ghost in Ghosts:
-        # VERIFIE HORIZANTALE
-        for x in range(LARGEUR):
-            for y in range(HAUTEUR):
-                if ghost != [x, y]:
-                    CasesValuesGhost(x, y)
-
-        # VERIFIE VERTICALEMENT
-        for y in range(HAUTEUR):
-            for x in range(LARGEUR):
-                if ghost != [x, y]:
-                    CasesValuesGhost(x, y)
 
 
 def PacManPossibleMove():
@@ -551,6 +508,9 @@ isPacmanSuper = False
 arrCorner = [[1, 1], [18, 1], [18, 9], [1, 9]]
 
 
+arrDistancePacmanGhost = [["" for i in range(LTBL)] for j in range(LTBL)]
+
+
 def IAPacman():
     global PacManPos, Ghosts
     global score
@@ -559,7 +519,6 @@ def IAPacman():
     global nbDisplay
     # deplacement Pacman
     L = PacManPossibleMove()
-    SetInfo3(PacManPos[0], PacManPos[1], 0)
     # choix = random.randrange(len(L))
     # PacManPos[0] += L[choix][0]
     # PacManPos[1] += L[choix][1]
@@ -574,8 +533,8 @@ def IAPacman():
     # definie map pour pacman
     GumMap()
 
-    # on cherche le min des cases possible en déplacement
-
+    # Pour chaque case possible de déplacement de Pacman on regarde la valeur de la case
+    # si la valeur est inférieur à la valeur actuelle on la remplace
     minimum = TBL2[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
     xAddMin = L[0][0]
     yAddMin = L[0][1]
@@ -600,29 +559,39 @@ def IAPacman():
             nbDisplay = 0
     nbDisplay += 1
 
+    # on calcul une map des distances pour les fantomes
+    # pour chaque chaque case du jeu on regarde la distance d'un ghost et de pacman
+    # si la distance est inférieur à 3 on met la valeur de la distance dans la case
+    # sinon on met 0
+    for x in range(LARGEUR):
+        for y in range(HAUTEUR):
+            for ghost in Ghosts:
+                arrDistancePacmanGhost[x][y] = abs(
+                    x - ghost[0]) + abs(y - ghost[1])
+                SetInfo3(x, y, arrDistancePacmanGhost[x][y])
 
 def GhostsHunted():
-    for F in Ghosts:
+    for ghost in Ghosts:
         # Boite ghost
-        L0 = GhostsPossibleMove0(F[0], F[1])
-        L2 = GhostsPossibleMove2(F[0], F[1])
+        L0 = GhostsPossibleMove0(ghost[0], ghost[1])
+        L2 = GhostsPossibleMove2(ghost[0], ghost[1])
         if (L0 != []):
-            print("rentré")
+            # print("rentré")
             min = 100
             choix = (0, 0)
             for l in L0:
                 if (TBL1[l[0]][l[1]] != None):
-                    res = int(TBL1[F[0] + l[0]][F[1] + l[1]])
+                    res = int(TBL1[ghost[0] + l[0]][ghost[1] + l[1]])
                     if min >= res:
                         min = res
                         choix = l
-            F[0] += choix[0]
-            F[1] += choix[1]
+            ghost[0] += choix[0]
+            ghost[1] += choix[1]
         else:
             #  il reste dans la cage
             choix2 = random.randrange(len(L2))
-            F[0] += L2[choix2][0]
-            F[1] += L2[choix2][1]
+            ghost[0] += L2[choix2][0]
+            ghost[1] += L2[choix2][1]
 
 
 def GhostsHunt():
@@ -631,7 +600,7 @@ def GhostsHunt():
         L0 = GhostsPossibleMove0(F[0], F[1])
         L2 = GhostsPossibleMove2(F[0], F[1])
         if (L0 != []):
-            print("rentré")
+            # print("rentré")
             max = 0
             choix = (0, 0)
             for l in L0:
@@ -650,11 +619,9 @@ def GhostsHunt():
 
 
 def IAGhosts():
-
     # map fontome
     for ghost in Ghosts:
         TBL1[ghost[0]][ghost[1]] = 0
-    GhostMap()
     # deplacement Fantome
     if (isPacmanSuper):
         GhostsHunted()
@@ -666,12 +633,12 @@ def IAGhosts():
 iteration = 0
 
 GAME_OVER_FLAG = False
+
+
 def PlayOneTurn():
     global iteration
-
-    
-
-     # si la position de pacman est égal à la position d'un ghost
+    global GAME_OVER_FLAG
+    # si la position de pacman est égal à la position d'un ghost
     for ghost in Ghosts:
         if (PacManPos[0] == ghost[0] and PacManPos[1] == ghost[1]):
             if (isPacmanSuper):
@@ -685,7 +652,7 @@ def PlayOneTurn():
                 Affiche(PacmanColor="red", message="GAME OVER")
                 GAME_OVER_FLAG = True
                 return
-    
+
     if not PAUSE_FLAG or GAME_OVER_FLAG:
         iteration += 1
         if iteration % 2 == 0:
