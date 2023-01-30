@@ -60,10 +60,10 @@ GUM = PlacementsGUM()
 PacManPos = [5, 5]
 
 Ghosts = []
-Ghosts.append([LARGEUR // 2, HAUTEUR // 2,  "pink", 0,0])
-Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "orange", 0,0])
-Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "cyan",0,0])
-Ghosts.append([(LARGEUR//2)+1, HAUTEUR // 2,  "red",0,0])
+Ghosts.append([LARGEUR // 2, HAUTEUR // 2,  "pink", 1,0])
+Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "orange", 1,0])
+Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "cyan",1,0])
+Ghosts.append([(LARGEUR//2)+1, HAUTEUR // 2,  "red",1,0])
 
 ##############################################################################
 #
@@ -312,7 +312,6 @@ def Affiche(PacmanColor, message):
     # dessine les fantomes
     dec = -3
     for P in Ghosts:
-        print(P[0], P[1])
         xx = To(P[0])
         yy = To(P[1])
         e = 16
@@ -664,24 +663,36 @@ def GhostsDeplacement():
          L0 = GhostsPossibleMove0(F[0], F[1]) 
          L2 = GhostsPossibleMove2(F[0], F[1]) 
          if(L0!=[]):
-            #    print("rentré")
-            #    min = 100
-            #    choix = (0,0)
-            #    for l in L0:
-            #       if(TBL3[l[0]][l[1]]!= None):
-            #          res = int(TBL3[F[0] + l[0]][F[1] + l[1]])
-            #          if min >= res:
-            #             min = res
-            #             choix = l
+            choice = (0,0)
+            if(len(L0)>= 3):
+               if((F[3],F[4])in L0):
+                L0.remove((F[3],F[4]))
                choix = random.randrange(len(L0))
-               F[0] += L0[choix][0]
-               F[1] += L0[choix][1]
+               choice = L0[choix]
+               
+            
+            if(len(L0)< 3):
+               if((F[3],F[4])not in L0):
+                choix = random.randrange(len(L0))
+                choice = L0[choix]
+                # F[0] += L0[choix][0]
+                # F[1] += L0[choix][1]
+                # F[3] = L0[choix][0]
+                # F[4] = L0[choix][1]  
+               if((F[3],F[4])in L0):
+                #choix = [F[3],F[4]]
+                choice = (int(F[3]), int(F[4]))
+            F[0] += choice[0]
+            F[1] += choice[1]
+            F[3] = choice[0]
+            F[4] = choice[1]
+            
          else:
             #  il reste dans la cage
                choix = random.randrange(len(L2))
                F[0] += L2[choix][0]
                F[1] += L2[choix][1]
-         #return choix
+         print(F[3],F[4])
 
 
 def IAGhosts():
