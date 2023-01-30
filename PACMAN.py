@@ -564,6 +564,44 @@ isPacmanSuper = False
 #  tableau des coins
 arrCorner = [[1, 1], [18, 1], [18, 9], [1, 9]]
 
+def PacManHunt(L):
+    if(int(TBL1[PacManPos[0]][PacManPos[1]]) > 3):
+        minimum = TBL2[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
+        xAddMin = L[0][0]
+        yAddMin = L[0][1]
+        for i in range(len(L)):
+            if (minimum < TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]):
+                minimum = TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]
+                xAddMin = L[i][0]
+                yAddMin = L[i][1]
+        PacManPos[0] += xAddMin
+        PacManPos[1] += yAddMin
+
+def PacManHunted(L):
+    if(int(TBL1[PacManPos[0]][PacManPos[1]]) > 3):
+        minimum = TBL2[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
+        xAddMin = L[0][0]
+        yAddMin = L[0][1]
+        for i in range(len(L)):
+            if (minimum > TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]):
+                minimum = TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]
+                xAddMin = L[i][0]
+                yAddMin = L[i][1]
+        PacManPos[0] += xAddMin
+        PacManPos[1] += yAddMin
+
+def PacManDefault(L):
+        max = TBL1[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
+        xAddMin = L[0][0]
+        yAddMin = L[0][1]
+        for i in range(len(L)):
+            if (max < TBL1[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]):
+                max = TBL1[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]
+                xAddMin = L[i][0]
+                yAddMin = L[i][1]
+        PacManPos[0] += xAddMin
+        PacManPos[1] += yAddMin
+
 
 def IAPacman():
     global PacManPos, Ghosts
@@ -587,6 +625,15 @@ def IAPacman():
         # booleen pour que ça s'effectue qu'une seul fois
         start = False
 
+    # deplacement
+    if(int(TBL1[PacManPos[0]][PacManPos[1]]) > 3):
+        if(isPacmanSuper):
+            PacManHunt(L)
+        else:
+            PacManHunted(L)
+    else:
+        PacManDefault(L)
+
     # definie map pour pacman
     for ghost in Ghosts:
       TBL1[ghost[0]][ghost[1]] = 0
@@ -594,30 +641,10 @@ def IAPacman():
     GumMap()
     PacMap()
 
-    # on cherche le min des cases possible en déplacement
-    if(int(TBL1[PacManPos[0]][PacManPos[1]]) > 3):
-        minimum = TBL2[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
-        xAddMin = L[0][0]
-        yAddMin = L[0][1]
-        for i in range(len(L)):
-            if (minimum > TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]):
-                minimum = TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]
-                xAddMin = L[i][0]
-                yAddMin = L[i][1]
-        PacManPos[0] += xAddMin
-        PacManPos[1] += yAddMin
 
-    else:
-        max = TBL1[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
-        xAddMin = L[0][0]
-        yAddMin = L[0][1]
-        for i in range(len(L)):
-            if (max < TBL1[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]):
-                max = TBL1[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]
-                xAddMin = L[i][0]
-                yAddMin = L[i][1]
-        PacManPos[0] += xAddMin
-        PacManPos[1] += yAddMin
+
+    # on cherche le min des cases possible en déplacement
+    
     # pour chaque coins on regarde si Pacman s'y trouve et qu'il y a une pacgum
     # si tel est le cas on passe en "hunting mode"
     # pendant le "hunting mode" on compte le nombre d'affichage
