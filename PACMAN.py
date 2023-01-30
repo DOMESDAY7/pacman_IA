@@ -532,6 +532,27 @@ def IAPacman():
 
     # definie map pour pacman
     GumMap()
+    # si pacman se trouve à moins de trois cases d'un fantome il passe en mode fuite
+    # sinon il chasse les pacgum
+
+    for ghost in Ghosts:
+        if (GetDistance(PacManPos[0], PacManPos[1], ghost[0], ghost[1]) < 3):
+            
+            # on créé un tableau de la forme [[distance,coordonnée X à rajouté,coordonnée Y à rajouté]]
+            arrDistance = []
+            for possibleMove in L:
+                print (possibleMove[0],possibleMove[1])
+                arrDistance.append([GetDistance(
+                    PacManPos[0]+possibleMove[0], PacManPos[1]+possibleMove[1], ghost[0], ghost[1]), possibleMove[0], possibleMove[1]])
+            maxCaseDistance = arrDistance[0]
+
+            # on détermine le max en terme d
+            for casePossible in arrDistance:
+                if (casePossible[0] > maxCaseDistance[0]):
+                    maxCaseDistance = casePossible
+            print(maxCaseDistance[1],maxCaseDistance[2])
+            PacManPos[0] += maxCaseDistance[2]
+            PacManPos[1] += maxCaseDistance[1]
 
     # Pour chaque case possible de déplacement de Pacman on regarde la valeur de la case
     # si la valeur est inférieur à la valeur actuelle on la remplace
@@ -543,6 +564,7 @@ def IAPacman():
             minimum = TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]
             xAddMin = L[i][0]
             yAddMin = L[i][1]
+
     PacManPos[0] += xAddMin
     PacManPos[1] += yAddMin
 
@@ -572,10 +594,10 @@ def IAPacman():
 
 def UpdateMap3(x, y, info):
     global arrDistancePacmanGhost
-    
+
     # on met à jour la map
     arrDistancePacmanGhost[x][y] = info
-    
+
     # on met à jour l'affichage
     SetInfo3(x, y, info)
 
