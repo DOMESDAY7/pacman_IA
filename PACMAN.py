@@ -60,10 +60,10 @@ GUM = PlacementsGUM()
 PacManPos = [5, 5]
 
 Ghosts = []
-Ghosts.append([LARGEUR // 2, HAUTEUR // 2,  "pink"])
-Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "orange"])
-Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "cyan"])
-Ghosts.append([(LARGEUR//2)+1, HAUTEUR // 2,  "red"])
+Ghosts.append([LARGEUR // 2, HAUTEUR // 2,  "pink", 0,0])
+Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "orange", 0,0])
+Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "cyan",0,0])
+Ghosts.append([(LARGEUR//2)+1, HAUTEUR // 2,  "red",0,0])
 
 ##############################################################################
 #
@@ -443,7 +443,7 @@ def CasesValuesGum(x, y):
 
 def CasesValuesGhost(x, y):
       if TBL[x][y] == 0 :
-        if([x,y] != Ghosts[0] and [x,y] != Ghosts[1] and [x,y] != Ghosts[2] and [x,y] != Ghosts[3]):  # VIDE PAS DE COULEUR
+        if([x,y] != [Ghosts[0][0],Ghosts[0][1]] and [x,y] != [Ghosts[1][0],Ghosts[1][1]] and [x,y] != [Ghosts[2][0],Ghosts[2][1]] and [x,y] != [Ghosts[3][0],Ghosts[3][1]]):  # VIDE PAS DE COULEUR
          info = CheckCasesGhost(x, y)
          SetInfo1(x, y, info)
         else:
@@ -588,23 +588,36 @@ def IAPacman():
         start = False
 
     # definie map pour pacman
-    
+    for ghost in Ghosts:
+      TBL1[ghost[0]][ghost[1]] = 0
+    GhostMap()
     GumMap()
     PacMap()
 
     # on cherche le min des cases possible en déplacement
+    if(int(TBL1[PacManPos[0]][PacManPos[1]]) > 3):
+        minimum = TBL2[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
+        xAddMin = L[0][0]
+        yAddMin = L[0][1]
+        for i in range(len(L)):
+            if (minimum > TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]):
+                minimum = TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]
+                xAddMin = L[i][0]
+                yAddMin = L[i][1]
+        PacManPos[0] += xAddMin
+        PacManPos[1] += yAddMin
 
-    minimum = TBL2[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
-    xAddMin = L[0][0]
-    yAddMin = L[0][1]
-    for i in range(len(L)):
-        if (minimum > TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]):
-            minimum = TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]
-            xAddMin = L[i][0]
-            yAddMin = L[i][1]
-    PacManPos[0] += xAddMin
-    PacManPos[1] += yAddMin
-
+    else:
+        max = TBL1[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
+        xAddMin = L[0][0]
+        yAddMin = L[0][1]
+        for i in range(len(L)):
+            if (max < TBL1[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]):
+                max = TBL1[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]
+                xAddMin = L[i][0]
+                yAddMin = L[i][1]
+        PacManPos[0] += xAddMin
+        PacManPos[1] += yAddMin
     # pour chaque coins on regarde si Pacman s'y trouve et qu'il y a une pacgum
     # si tel est le cas on passe en "hunting mode"
     # pendant le "hunting mode" on compte le nombre d'affichage
@@ -625,22 +638,24 @@ def GhostsHunt():
          L0 = GhostsPossibleMove0(F[0], F[1]) 
          L2 = GhostsPossibleMove2(F[0], F[1]) 
          if(L0!=[]):
-               print("rentré")
-               min = 100
-               choix = (0,0)
-               for l in L0:
-                  if(TBL3[l[0]][l[1]]!= None):
-                     res = int(TBL3[F[0] + l[0]][F[1] + l[1]])
-                     if min >= res:
-                        min = res
-                        choix = l
-               F[0] += choix[0]
-               F[1] += choix[1]
+            #    print("rentré")
+            #    min = 100
+            #    choix = (0,0)
+            #    for l in L0:
+            #       if(TBL3[l[0]][l[1]]!= None):
+            #          res = int(TBL3[F[0] + l[0]][F[1] + l[1]])
+            #          if min >= res:
+            #             min = res
+            #             choix = l
+               choix = random.randrange(len(L0))
+               F[0] += L0[choix][0]
+               F[1] += L0[choix][1]
          else:
             #  il reste dans la cage
-               choix2 = random.randrange(len(L2))
-               F[0] += L2[choix2][0]
-               F[1] += L2[choix2][1]
+               choix = random.randrange(len(L2))
+               F[0] += L2[choix][0]
+               F[1] += L2[choix][1]
+         #return choix
 
 def GhostsHunted():
    for F in Ghosts: 
@@ -648,29 +663,37 @@ def GhostsHunted():
          L0 = GhostsPossibleMove0(F[0], F[1]) 
          L2 = GhostsPossibleMove2(F[0], F[1]) 
          if(L0!=[]):
-               print("rentré")
-               max = 0
-               choix = (0,0)
-               for l in L0:
-                  if(TBL3[l[0]][l[1]]!= None):
-                     res = int(TBL3[F[0] + l[0]][F[1] + l[1]])
-                     if max <= res:
-                        max = res
-                        choix = l
-               F[0] += choix[0]
-               F[1] += choix[1]
+            #    print("rentré")
+            #    max = 0
+            #    choix = (0,0)
+            #    for l in L0:
+            #       if(TBL3[l[0]][l[1]]!= None):
+            #          res = int(TBL3[F[0] + l[0]][F[1] + l[1]])
+            #          if max <= res:
+            #             max = res
+            #             choix = l
+                if(len(L0)>=3):
+                    if( (F[4],F[5]) in L0 ):
+                        L0.remove((F[4],F[5]))
+                    choix = random.randrange(len(L0))
+                    F[0] += L0[choix][0]
+                    F[1] += L0[choix][1]
+                if(len(L0)==2):
+                    if( (F[4],F[5]) in L0 ):
+                        choix = (F[4],F[5])
+                        F[0] += F[4]
+                        F[1] += F[5]
+                F[3]=choix[0] 
+                F[4]=choix[1]
          else:
             #  il reste dans la cage
                choix2 = random.randrange(len(L2))
                F[0] += L2[choix2][0]
                F[1] += L2[choix2][1]
 
-def IAGhosts():
 
-    # map fontome
-    for ghost in Ghosts:
-      TBL1[ghost[0]][ghost[1]] = 0
-    GhostMap()
+def IAGhosts():
+    
     # deplacement Fantome
     if(isPacmanSuper):
       GhostsHunted()
