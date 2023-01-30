@@ -69,6 +69,11 @@ Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "orange", 0, 0, "up"])
 Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "cyan", 0, 0, "up"])
 Ghosts.append([(LARGEUR//2)+1, HAUTEUR // 2,  "red", 0, 0, "up"])
 
+Ghosts.append([LARGEUR // 2, HAUTEUR // 2,  "pink", 1, 0, "up"])
+Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "orange", 1, 0, "up"])
+Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "cyan", 1, 0, "up"])
+Ghosts.append([(LARGEUR//2)+1, HAUTEUR // 2,  "red", 1, 0, "up"])
+
 ##############################################################################
 #
 #  Debug : ne pas toucher (affichage des valeurs autours dans les cases
