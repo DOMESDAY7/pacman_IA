@@ -534,25 +534,26 @@ def IAPacman():
     GumMap()
     # si pacman se trouve à moins de trois cases d'un fantome il passe en mode fuite
     # sinon il chasse les pacgum
-
     for ghost in Ghosts:
         if (GetDistance(PacManPos[0], PacManPos[1], ghost[0], ghost[1]) < 3):
-            
+
             # on créé un tableau de la forme [[distance,coordonnée X à rajouté,coordonnée Y à rajouté]]
             arrDistance = []
             for possibleMove in L:
-                print (possibleMove[0],possibleMove[1])
                 arrDistance.append([GetDistance(
                     PacManPos[0]+possibleMove[0], PacManPos[1]+possibleMove[1], ghost[0], ghost[1]), possibleMove[0], possibleMove[1]])
-            maxCaseDistance = arrDistance[0]
+
+            print(arrDistance)
 
             # on détermine le max en terme d
+            maxCaseDistance = arrDistance[0]
+
             for casePossible in arrDistance:
                 if (casePossible[0] > maxCaseDistance[0]):
                     maxCaseDistance = casePossible
-            print(maxCaseDistance[1],maxCaseDistance[2])
-            PacManPos[0] += maxCaseDistance[2]
-            PacManPos[1] += maxCaseDistance[1]
+            print(maxCaseDistance[1], maxCaseDistance[2])
+            PacManPos[0] += maxCaseDistance[1]
+            PacManPos[1] += maxCaseDistance[2]
 
     # Pour chaque case possible de déplacement de Pacman on regarde la valeur de la case
     # si la valeur est inférieur à la valeur actuelle on la remplace
