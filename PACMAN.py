@@ -565,7 +565,6 @@ isPacmanSuper = False
 arrCorner = [[1, 1], [18, 1], [18, 9], [1, 9]]
 
 def PacManHunt(L):
-    if(int(TBL1[PacManPos[0]][PacManPos[1]]) > 3):
         minimum = TBL2[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
         xAddMin = L[0][0]
         yAddMin = L[0][1]
@@ -578,7 +577,6 @@ def PacManHunt(L):
         PacManPos[1] += yAddMin
 
 def PacManHunted(L):
-    if(int(TBL1[PacManPos[0]][PacManPos[1]]) > 3):
         minimum = TBL2[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
         xAddMin = L[0][0]
         yAddMin = L[0][1]
@@ -620,10 +618,6 @@ def IAPacman():
     if GUM[PacManPos[0]][PacManPos[1]] == 1:
         GUM[PacManPos[0]][PacManPos[1]] = 0
         score += 100
-    if (start == True):
-        
-        # booleen pour que ça s'effectue qu'une seul fois
-        start = False
 
     # deplacement
     if(int(TBL1[PacManPos[0]][PacManPos[1]]) > 3):
@@ -659,7 +653,7 @@ def IAPacman():
             nbDisplay = 0
     nbDisplay += 1
 
-def GhostsHunt():
+def GhostsDeplacement():
    for F in Ghosts: 
          # Boite ghost 
          L0 = GhostsPossibleMove0(F[0], F[1]) 
@@ -684,48 +678,9 @@ def GhostsHunt():
                F[1] += L2[choix][1]
          #return choix
 
-def GhostsHunted():
-   for F in Ghosts: 
-         # Boite ghost 
-         L0 = GhostsPossibleMove0(F[0], F[1]) 
-         L2 = GhostsPossibleMove2(F[0], F[1]) 
-         if(L0!=[]):
-            #    print("rentré")
-            #    max = 0
-            #    choix = (0,0)
-            #    for l in L0:
-            #       if(TBL3[l[0]][l[1]]!= None):
-            #          res = int(TBL3[F[0] + l[0]][F[1] + l[1]])
-            #          if max <= res:
-            #             max = res
-            #             choix = l
-                if(len(L0)>=3):
-                    if( (F[4],F[5]) in L0 ):
-                        L0.remove((F[4],F[5]))
-                    choix = random.randrange(len(L0))
-                    F[0] += L0[choix][0]
-                    F[1] += L0[choix][1]
-                if(len(L0)==2):
-                    if( (F[4],F[5]) in L0 ):
-                        choix = (F[4],F[5])
-                        F[0] += F[4]
-                        F[1] += F[5]
-                F[3]=choix[0] 
-                F[4]=choix[1]
-         else:
-            #  il reste dans la cage
-               choix2 = random.randrange(len(L2))
-               F[0] += L2[choix2][0]
-               F[1] += L2[choix2][1]
-
 
 def IAGhosts():
-    
-    # deplacement Fantome
-    if(isPacmanSuper):
-      GhostsHunted()
-    else:
-      GhostsHunt()
+      GhostsDeplacement()
    
 
 
