@@ -64,6 +64,10 @@ Ghosts.append([LARGEUR // 2, HAUTEUR // 2,  "pink", 1,0])
 Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "orange", 1,0])
 Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "cyan",1,0])
 Ghosts.append([(LARGEUR//2)+1, HAUTEUR // 2,  "red",1,0])
+Ghosts.append([LARGEUR // 2, HAUTEUR // 2,  "pink", 0, 0, "up"])
+Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "orange", 0, 0, "up"])
+Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "cyan", 0, 0, "up"])
+Ghosts.append([(LARGEUR//2)+1, HAUTEUR // 2,  "red", 0, 0, "up"])
 
 ##############################################################################
 #
@@ -75,6 +79,8 @@ TBL2 = [["" for i in range(LTBL)] for j in range(LTBL)]
 TBL3 = [["" for i in range(LTBL)] for j in range(LTBL)]
 
 # info peut etre une valeur / un string vide / un string...
+
+
 def SetInfo1(x, y, info):
     info = str(info)
     if x < 0:
@@ -99,6 +105,7 @@ def SetInfo2(x, y, info):
     if y >= LTBL:
         return
     TBL2[x][y] = info
+
 
 def SetInfo3(x, y, info):
     info = str(info)
@@ -202,6 +209,7 @@ def SetTabs():
                 info = 100
                 SetInfo3(x, y, info)
 
+
 SetTabs()
 Window.after(100, WindowAnim)
 
@@ -288,12 +296,12 @@ def Affiche(PacmanColor, message):
             txt = TBL2[x][y]
             canvas.create_text(xx, yy, text=txt, fill="yellow",
                                font=("Purisa", 8))
-    
+
     # extra info 3
     for x in range(LARGEUR):
         for y in range(HAUTEUR):
             xx = To(x)
-            yy = To(y) +11
+            yy = To(y) + 11
             txt = TBL3[x][y]
             canvas.create_text(xx, yy, text=txt, fill="green",
                                font=("Purisa", 8))
@@ -406,6 +414,7 @@ def CheckCasesPacman(x, y):
     return info
     # return la valeur info
 
+
 def CheckCasesGhost(x, y):
     list = [100, 100, 100, 100]
     if not (len(TBL[x]) < y+1):
@@ -440,18 +449,21 @@ def CasesValuesGum(x, y):
         info = CheckCasesGum(x, y)
         SetInfo2(x, y, info)
 
+
 def CasesValuesGhost(x, y):
-      if TBL[x][y] == 0 :
-        if([x,y] != [Ghosts[0][0],Ghosts[0][1]] and [x,y] != [Ghosts[1][0],Ghosts[1][1]] and [x,y] != [Ghosts[2][0],Ghosts[2][1]] and [x,y] != [Ghosts[3][0],Ghosts[3][1]]):  # VIDE PAS DE COULEUR
-         info = CheckCasesGhost(x, y)
-         SetInfo1(x, y, info)
+    if TBL[x][y] == 0:
+        if ([x, y] != [Ghosts[0][0], Ghosts[0][1]] and [x, y] != [Ghosts[1][0], Ghosts[1][1]] and [x, y] != [Ghosts[2][0], Ghosts[2][1]] and [x, y] != [Ghosts[3][0], Ghosts[3][1]]):  # VIDE PAS DE COULEUR
+            info = CheckCasesGhost(x, y)
+            SetInfo1(x, y, info)
         else:
-         SetInfo1(x, y, 0)
+            SetInfo1(x, y, 0)
+
 
 def CasesValuesPacMan(x, y):
     if TBL[x][y] == 0:  # VIDE PAS DE COULEUR
         info = CheckCasesPacman(x, y)
         SetInfo3(x, y, info)
+
 
 def GumMap():
     # VERIFIE HORIZANTALE
@@ -466,55 +478,53 @@ def GumMap():
             if TBL2[x][y] != 0:
                 CasesValuesGum(x, y)
 
+
 def PacMap():
     # VERIFIE HORIZANTALE
     for x in range(LARGEUR):
         for y in range(HAUTEUR):
-            if [x,y] != PacManPos:
+            if [x, y] != PacManPos:
                 CasesValuesPacMan(x, y)
 
     # VERIFIE VERTICALEMENT
     for y in range(HAUTEUR):
         for x in range(LARGEUR):
-            if [x,y] != PacManPos:
+            if [x, y] != PacManPos:
                 CasesValuesPacMan(x, y)
 
     # VERIFIE HORIZANTALE
     for x in range(LARGEUR):
         for y in range(HAUTEUR):
-            if [x,y] != PacManPos:
+            if [x, y] != PacManPos:
                 CasesValuesPacMan(x, y)
 
     # VERIFIE VERTICALEMENT
     for y in range(HAUTEUR):
         for x in range(LARGEUR):
-            if [x,y] != PacManPos:
+            if [x, y] != PacManPos:
                 CasesValuesPacMan(x, y)
 
-                
 
+def GhostMap():
+    # VERIFIE HORIZANTALE
+    for x in range(LARGEUR):
+        for y in range(HAUTEUR):
+            CasesValuesGhost(x, y)
 
-def GhostMap(): 
-         # VERIFIE HORIZANTALE
-         for x in range(LARGEUR):
-            for y in range(HAUTEUR):
-                CasesValuesGhost(x, y)
+    # VERIFIE VERTICALEMENT
+    for y in range(HAUTEUR):
+        for x in range(LARGEUR):
+            CasesValuesGhost(x, y)
 
-         # VERIFIE VERTICALEMENT
-         for y in range(HAUTEUR):
-            for x in range(LARGEUR):
-                CasesValuesGhost(x, y)
-        
-         # VERIFIE HORIZANTALE
-         for x in range(LARGEUR):
-            for y in range(HAUTEUR):
-                CasesValuesGhost(x, y)
+    # VERIFIE HORIZANTALE
+    for x in range(LARGEUR):
+        for y in range(HAUTEUR):
+            CasesValuesGhost(x, y)
 
-         # VERIFIE VERTICALEMENT
-         for y in range(HAUTEUR):
-            for x in range(LARGEUR):
-                CasesValuesGhost(x, y)
-
+    # VERIFIE VERTICALEMENT
+    for y in range(HAUTEUR):
+        for x in range(LARGEUR):
+            CasesValuesGhost(x, y)
 
 
 def PacManPossibleMove():
@@ -542,6 +552,8 @@ def GhostsPossibleMove0(x, y):
     if (TBL[x-1][y] == 0):
         L0.append((-1, 0))
     return L0
+
+
 def GhostsPossibleMove2(x, y):
     L2 = []
     if (TBL[x][y-1] == 2):
@@ -563,6 +575,7 @@ isPacmanSuper = False
 #  tableau des coins
 arrCorner = [[1, 1], [18, 1], [18, 9], [1, 9]]
 
+
 def PacManHunt(L):
     # if(int(TBL1[PacManPos[0]][PacManPos[1]]) < 3):
     #     maximum= TBL2[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
@@ -576,10 +589,11 @@ def PacManHunt(L):
     #     PacManPos[0] += xAddMin
     #     PacManPos[1] += yAddMin
     # else:
-        PacManDefault(L)
+    PacManDefault(L)
+
 
 def PacManHunted(L):
-    if(int(TBL1[PacManPos[0]][PacManPos[1]]) > 3):
+    if (int(TBL1[PacManPos[0]][PacManPos[1]]) > 3):
         minimum = TBL2[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
         xAddMin = L[0][0]
         yAddMin = L[0][1]
@@ -593,17 +607,18 @@ def PacManHunted(L):
     else:
         PacManDefault(L)
 
+
 def PacManDefault(L):
-        max = TBL1[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
-        xAddMin = L[0][0]
-        yAddMin = L[0][1]
-        for i in range(len(L)):
-            if (max < TBL1[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]):
-                max = TBL1[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]
-                xAddMin = L[i][0]
-                yAddMin = L[i][1]
-        PacManPos[0] += xAddMin
-        PacManPos[1] += yAddMin
+    max = TBL1[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
+    xAddMin = L[0][0]
+    yAddMin = L[0][1]
+    for i in range(len(L)):
+        if (max < TBL1[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]):
+            max = TBL1[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]
+            xAddMin = L[i][0]
+            yAddMin = L[i][1]
+    PacManPos[0] += xAddMin
+    PacManPos[1] += yAddMin
 
 
 def IAPacman():
@@ -613,36 +628,30 @@ def IAPacman():
     global isPacmanSuper
     global nbDisplay
     # deplacement Pacman
-    
-    
+
     L = PacManPossibleMove()
     SetInfo3(PacManPos[0], PacManPos[1], 0)
-
-    
 
     if GUM[PacManPos[0]][PacManPos[1]] == 1:
         GUM[PacManPos[0]][PacManPos[1]] = 0
         score += 100
 
     # deplacement
-    
-    if(isPacmanSuper):
-            PacManHunt(L)
+
+    if (isPacmanSuper):
+        PacManHunt(L)
     else:
-            PacManHunted(L)
-    
+        PacManHunted(L)
 
     # definie map pour pacman
     for ghost in Ghosts:
-      TBL1[ghost[0]][ghost[1]] = 0
+        TBL1[ghost[0]][ghost[1]] = 0
     GhostMap()
     GumMap()
     PacMap()
 
-
-
     # on cherche le min des cases possible en déplacement
-    
+
     # pour chaque coins on regarde si Pacman s'y trouve et qu'il y a une pacgum
     # si tel est le cas on passe en "hunting mode"
     # pendant le "hunting mode" on compte le nombre d'affichage
@@ -656,6 +665,7 @@ def IAPacman():
             isPacmanSuper = False
             nbDisplay = 0
     nbDisplay += 1
+
 
 def GhostsDeplacement():
    for F in Ghosts: 
@@ -696,8 +706,7 @@ def GhostsDeplacement():
 
 
 def IAGhosts():
-      GhostsDeplacement()
-   
+    GhostsDeplacement()
 
 
 #  Boucle principale de votre jeu appelée toutes les 500ms
