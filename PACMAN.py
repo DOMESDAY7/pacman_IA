@@ -708,15 +708,28 @@ iteration = 0
 
 def PlayOneTurn():
     global iteration
+    global GAME_OVER_FLAG
+    # si la position de pacman est égal à la position d'un ghost
+    for ghost in Ghosts:
+        if (PacManPos[0] == ghost[0] and PacManPos[1] == ghost[1]):
+            if (isPacmanSuper):
+                # on met le ghost en cage
+                ghost[0] = LARGEUR//2
+                ghost[1] = HAUTEUR//2
+                # on augmente le score
+                # score += 1000
+            else:
+                # on affiche game over
+                Affiche(PacmanColor="red", message="GAME OVER")
+                GAME_OVER_FLAG = True
+                return
 
-    if not PAUSE_FLAG:
+    if not PAUSE_FLAG or GAME_OVER_FLAG:
         iteration += 1
         if iteration % 2 == 0:
             IAPacman()
         else:
             IAGhosts()
-
-    # si la position de pacman est égal à la position d'un ghost
 
     if (isPacmanSuper):
         Affiche(PacmanColor="red", message=score)
