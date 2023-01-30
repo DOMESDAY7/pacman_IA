@@ -60,10 +60,11 @@ GUM = PlacementsGUM()
 PacManPos = [5, 5]
 
 Ghosts = []
-Ghosts.append([LARGEUR // 2, HAUTEUR // 2,  "pink", 0, 0, "up"])
-Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "orange", 0, 0, "up"])
-Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "cyan", 0, 0, "up"])
-Ghosts.append([(LARGEUR//2)+1, HAUTEUR // 2,  "red", 0, 0, "up"])
+
+Ghosts.append([LARGEUR // 2, HAUTEUR // 2,  "pink", 1, 0, "up"])
+Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "orange", 1, 0, "up"])
+Ghosts.append([LARGEUR//2, HAUTEUR // 2,  "cyan", 1, 0, "up"])
+Ghosts.append([(LARGEUR//2)+1, HAUTEUR // 2,  "red", 1, 0, "up"])
 
 ##############################################################################
 #
@@ -316,7 +317,6 @@ def Affiche(PacmanColor, message):
     # dessine les fantomes
     dec = -3
     for P in Ghosts:
-        # print(P[0], P[1])
         xx = To(P[0])
         yy = To(P[1])
         e = 16
@@ -665,54 +665,41 @@ def IAPacman():
 
 
 def GhostsDeplacement():
-    up = (0, 1)
-    down = (0, -1)
-    left = (1, 0)
-    right = (-1, 0)
-    for ghost in Ghosts:
-        
-        xGhost = ghost[0]
-        yGhost = ghost[1]
-        possibleMove = GhostsPossibleMove0(xGhost, yGhost)
-        # si le changement de direction est possible on de maniète aléatoire la prochain direction
-        # sinon on continue dans la direction actuelle
-
-        if (up in possibleMove and left in possibleMove):
-            choice = [up, left]
-            choix = random.choice(choice)
-            xGhost += choix[0]
-            yGhost += choix[1]
-
-        if (down in possibleMove and left in possibleMove):
-            choice = [down, left, ]
-            choix = random.choice(choice)
-            xGhost += choix[0]
-            yGhost += choix[1]
-        if (up in possibleMove and right in possibleMove):
-            choice = [up, right]
-            choix = random.choice(choice)
-            xGhost += choix[0]
-            yGhost += choix[1]
-        if (down in possibleMove and right in possibleMove):
-            choice = [down, right]
-            choix = random.choice(choice)
-            xGhost += choix[0]
-            yGhost += choix[1]
-        else:
-            if (up in possibleMove and ghost[5] == "up"):
-                xGhost += 0
-                yGhost += 1
-            elif (down in possibleMove and ghost[5] == "down"):
-                xGhost += 0
-                yGhost += -1
-            elif (left in possibleMove and ghost[5] == "left"):
-                xGhost += 1
-                yGhost += 0
-            elif (right in possibleMove and ghost[5] == "right"):
-                xGhost += -1
-                yGhost += 0
-
-    # return choix
+   for F in Ghosts: 
+         # Boite ghost 
+         L0 = GhostsPossibleMove0(F[0], F[1]) 
+         L2 = GhostsPossibleMove2(F[0], F[1]) 
+         if(L0!=[]):
+            choice = (0,0)
+            if(len(L0)>= 3):
+               if((F[3],F[4])in L0):
+                L0.remove((F[3],F[4]))
+               choix = random.randrange(len(L0))
+               choice = L0[choix]
+               
+            
+            if(len(L0)< 3):
+               if((F[3],F[4])not in L0):
+                choix = random.randrange(len(L0))
+                choice = L0[choix]
+                # F[0] += L0[choix][0]
+                # F[1] += L0[choix][1]
+                # F[3] = L0[choix][0]
+                # F[4] = L0[choix][1]  
+               if((F[3],F[4])in L0):
+                #choix = [F[3],F[4]]
+                choice = (int(F[3]), int(F[4]))
+            F[0] += choice[0]
+            F[1] += choice[1]
+            F[3] = choice[0]
+            F[4] = choice[1]
+            
+         else:
+            #  il reste dans la cage
+               choix = random.randrange(len(L2))
+               F[0] += L2[choix][0]
+               F[1] += L2[choix][1]
+         print(F[3],F[4])
 
 
 def IAGhosts():
