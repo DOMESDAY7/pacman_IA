@@ -565,18 +565,22 @@ isPacmanSuper = False
 arrCorner = [[1, 1], [18, 1], [18, 9], [1, 9]]
 
 def PacManHunt(L):
-        minimum = TBL2[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
-        xAddMin = L[0][0]
-        yAddMin = L[0][1]
-        for i in range(len(L)):
-            if (minimum < TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]):
-                minimum = TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]
-                xAddMin = L[i][0]
-                yAddMin = L[i][1]
-        PacManPos[0] += xAddMin
-        PacManPos[1] += yAddMin
+    # if(int(TBL1[PacManPos[0]][PacManPos[1]]) < 3):
+    #     maximum= TBL2[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
+    #     xAddMin = L[0][0]
+    #     yAddMin = L[0][1]
+    #     for i in range(len(L)):
+    #         if (maximum < TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]):
+    #             maximum= TBL2[PacManPos[0] + L[i][0]][PacManPos[1] + L[i][1]]
+    #             xAddMin = L[i][0]
+    #             yAddMin = L[i][1]
+    #     PacManPos[0] += xAddMin
+    #     PacManPos[1] += yAddMin
+    # else:
+        PacManDefault(L)
 
 def PacManHunted(L):
+    if(int(TBL1[PacManPos[0]][PacManPos[1]]) > 3):
         minimum = TBL2[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
         xAddMin = L[0][0]
         yAddMin = L[0][1]
@@ -587,6 +591,8 @@ def PacManHunted(L):
                 yAddMin = L[i][1]
         PacManPos[0] += xAddMin
         PacManPos[1] += yAddMin
+    else:
+        PacManDefault(L)
 
 def PacManDefault(L):
         max = TBL1[PacManPos[0] + L[0][0]][PacManPos[1] + L[0][1]]
@@ -620,13 +626,12 @@ def IAPacman():
         score += 100
 
     # deplacement
-    if(int(TBL1[PacManPos[0]][PacManPos[1]]) > 3):
-        if(isPacmanSuper):
+    
+    if(isPacmanSuper):
             PacManHunt(L)
-        else:
-            PacManHunted(L)
     else:
-        PacManDefault(L)
+            PacManHunted(L)
+    
 
     # definie map pour pacman
     for ghost in Ghosts:
